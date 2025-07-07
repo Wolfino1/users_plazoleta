@@ -99,7 +99,7 @@ public class UserController {
                 request.dateOfBirth(),
                 request.email(),
                 request.password(),
-                DomainConstants.EMPLOYEE_ID
+                DomainConstants.CLIENT_ID
         );
         SaveUserResponse response = userService.save(withClientRole);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
