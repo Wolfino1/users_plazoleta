@@ -1,0 +1,23 @@
+server:
+  port: 8080
+spring:
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+  security:
+    password:
+      encoder: bcrypt
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+  application:
+    name: demo
+  datasource:
+    url: jdbc:mysql://localhost/usuarios_plazoleta
+    username: ${user}
+    password: ${password}
+  jpa:
+    hibernate:
+      ddl-auto: update
