@@ -37,24 +37,33 @@ public class BeanConfiguration {
     private final RoleEntityMapper roleEntityMapper;
 
     @Bean
-    public UserServicePort userServicePort() {
-        return new UserUseCase(userPersistencePort(),roleUseCase());
-    }
-    @Bean
     public UserPersistencePort userPersistencePort() {
         return new UserPersistenceAdapter(userRepository, userEntityMapper);
     }
 
     @Bean
     public RolePersistencePort rolePersistencePort(){
-        return new RolePersistenceAdapter(roleRepository,roleEntityMapper);
+        return new RolePersistenceAdapter(roleRepository, roleEntityMapper);
     }
-    @Bean
-    public RoleServicePort roleServicePort(){return new RoleUseCase(rolePersistencePort());}
 
     @Bean
     public RoleUseCase roleUseCase() {
         return new RoleUseCase(rolePersistencePort());
+    }
+
+    @Bean
+    public UserUseCase userUseCase() {
+        return new UserUseCase(userPersistencePort(), roleUseCase());
+    }
+
+    @Bean
+    public UserServicePort userServicePort() {
+        return userUseCase();
+    }
+
+    @Bean
+    public RoleServicePort roleServicePort() {
+        return roleUseCase();
     }
 
     @Bean

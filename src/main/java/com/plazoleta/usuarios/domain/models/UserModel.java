@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
         private String password;
         private Long idRole;
 
-        public UserModel(long id, String name, String lastname, String document, String phoneNumber, LocalDate dateOfBirth,
-                         String email, String password, Long idRole) {
+        public UserModel(long id, String name, String lastname, String document, String phoneNumber,
+                         LocalDate dateOfBirth, String email, String password, Long idRole) {
             this.id = id;
             setName(name);
             setLastname(lastname);

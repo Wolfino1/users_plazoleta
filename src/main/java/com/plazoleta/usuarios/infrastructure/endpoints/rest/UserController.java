@@ -3,7 +3,6 @@ package com.plazoleta.usuarios.infrastructure.endpoints.rest;
 import com.plazoleta.usuarios.application.dto.request.SaveUserRequest;
 import com.plazoleta.usuarios.application.dto.response.SaveUserResponse;
 import com.plazoleta.usuarios.application.service.UserService;
-import com.plazoleta.usuarios.domain.util.constants.DomainConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -54,71 +53,23 @@ public class UserController {
             }
     )
     public ResponseEntity<SaveUserResponse> saveOwner(@RequestBody SaveUserRequest request) {
-        SaveUserRequest requestWithRole = new SaveUserRequest(
-                request.id(),
-                request.name(),
-                request.lastname(),
-                request.document(),
-                request.phoneNumber(),
-                request.dateOfBirth(),
-                request.email(),
-                request.password(),
-                DomainConstants.OWNER_ID
-        );
-
-        SaveUserResponse response = userService.save(requestWithRole);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.saveOwner(request));
     }
 
     @PostMapping("/employee")
     @PreAuthorize("hasRole('OWNER')")
     public ResponseEntity<SaveUserResponse> saveEmployee(@RequestBody SaveUserRequest request) {
-        SaveUserRequest withEmployeeRole = new SaveUserRequest(
-                request.id(),
-                request.name(),
-                request.lastname(),
-                request.document(),
-                request.phoneNumber(),
-                request.dateOfBirth(),
-                request.email(),
-                request.password(),
-                DomainConstants.EMPLOYEE_ID
-        );
-        SaveUserResponse response = userService.save(withEmployeeRole);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.saveEmployee(request));
     }
 
     @PostMapping("/client")
     public ResponseEntity<SaveUserResponse> saveClient(@RequestBody SaveUserRequest request) {
-        SaveUserRequest withClientRole = new SaveUserRequest(
-                request.id(),
-                request.name(),
-                request.lastname(),
-                request.document(),
-                request.phoneNumber(),
-                request.dateOfBirth(),
-                request.email(),
-                request.password(),
-                DomainConstants.CLIENT_ID
-        );
-        SaveUserResponse response = userService.save(withClientRole);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userService.saveClient(request));
     }
-
-    /*@PostMapping("/admin")
-    public ResponseEntity<SaveUserResponse> saveAdmin(@RequestBody SaveUserRequest request) {
-        SaveUserRequest withAdminRole = new SaveUserRequest(
-                request.id(),
-                request.name(),
-                request.lastname(),
-                request.document(),
-                request.phoneNumber(),
-                request.dateOfBirth(),
-                request.email(),
-                request.password(),
-                DomainConstants.ADMIN_ID
-        );
-        SaveUserResponse response = userService.save(withAdminRole);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }*/
 }

@@ -62,8 +62,8 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-            extractAllClaims(token);       // arroja si la firma falla
-            return !isTokenExpired(token); // comprueba la fecha
+            extractAllClaims(token);
+            return !isTokenExpired(token);
         } catch (Exception e) {
             return false;
         }

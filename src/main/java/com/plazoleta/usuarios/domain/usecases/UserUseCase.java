@@ -20,15 +20,12 @@ public class UserUseCase implements UserServicePort {
     }
 
     @Override
-    public void save(UserModel userModel) {
-
-        Optional<RoleModel> roleModel = roleUseCase.getById(userModel.getIdRole());
-
-        if (roleModel.isEmpty()) {
+    public void save(UserModel userModel, Long roleId) {
+        Optional<RoleModel> role = roleUseCase.getById(roleId);
+        if (role.isEmpty()) {
             throw new EmptyException(DomainConstants.ROLE_NOT_FOUND);
         }
-
-        userModel.setIdRole(roleModel.get().getId());
+        userModel.setIdRole(roleId);
         userPersistencePort.save(userModel);
     }
 }

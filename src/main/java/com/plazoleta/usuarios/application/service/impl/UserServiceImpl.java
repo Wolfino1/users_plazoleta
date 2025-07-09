@@ -6,9 +6,9 @@ import com.plazoleta.usuarios.application.dto.response.SaveUserResponse;
 import com.plazoleta.usuarios.application.mappers.UserDtoMapper;
 import com.plazoleta.usuarios.application.service.UserService;
 import com.plazoleta.usuarios.domain.models.UserModel;
-import com.plazoleta.usuarios.domain.ports.in.UserServicePort;
+import com.plazoleta.usuarios.domain.usecases.UserUseCase;
+import com.plazoleta.usuarios.domain.util.constants.DomainConstants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,18 +16,37 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserServicePort userServicePort;
-    private final UserDtoMapper userDtoMapper;
-    private final PasswordEncoder passwordEncoder;
+
+    private final UserDtoMapper mapper;
+    private final UserUseCase useCase;
 
     @Override
-    public SaveUserResponse save(SaveUserRequest request) {
-        String encodedPassword = passwordEncoder.encode(request.password());
+    public SaveUserResponse saveOwner(SaveUserRequest req) {
+        UserModel model = mapper.requestToModel(req);
+        useCase.save(model, DomainConstants.OWNER_ID);
+        return new SaveUserResponse(
+                Constants.SAVE_USER_RESPONSE_MESSAGE,
+                LocalDateTime.now()
+        );
+    }
 
-        UserModel user = userDtoMapper.requestToModel(request);
-        user.setPassword(encodedPassword,user.getPassword());
+    @Override
+    public SaveUserResponse saveEmployee(SaveUserRequest req) {
+        UserModel model = mapper.requestToModel(req);
+        useCase.save(model, DomainConstants.EMPLOYEE_ID);
+        return new SaveUserResponse(
+                Constants.SAVE_USER_RESPONSE_MESSAGE,
+                LocalDateTime.now()
+        );
+    }
 
-        userServicePort.save(user);
-        return new SaveUserResponse(Constants.SAVE_USER_RESPONSE_MESSAGE, LocalDateTime.now());
+    @Override
+    public SaveUserResponse saveClient(SaveUserRequest req) {
+        UserModel model = mapper.requestToModel(req);
+        useCase.save(model, DomainConstants.CLIENT_ID);
+        return new SaveUserResponse(
+                Constants.SAVE_USER_RESPONSE_MESSAGE,
+                LocalDateTime.now()
+        );
     }
 }

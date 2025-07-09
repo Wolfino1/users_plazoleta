@@ -3,10 +3,10 @@ package com.plazoleta.usuarios.domaintests;
 import com.plazoleta.usuarios.domain.exceptions.EmptyException;
 import com.plazoleta.usuarios.domain.models.RoleModel;
 import com.plazoleta.usuarios.domain.models.UserModel;
-import com.plazoleta.usuarios.domain.ports.out.UserPersistencePort;
 import com.plazoleta.usuarios.domain.usecases.RoleUseCase;
 import com.plazoleta.usuarios.domain.usecases.UserUseCase;
 import com.plazoleta.usuarios.domain.util.constants.DomainConstants;
+import com.plazoleta.usuarios.domain.ports.out.UserPersistencePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -20,62 +20,67 @@ import static org.mockito.Mockito.*;
 
 class UserUseCaseTest {
 
-    private UserUseCase userUseCase;
-
     @Mock
     private UserPersistencePort userPersistencePort;
-
     @Mock
     private RoleUseCase roleUseCase;
+
+    private UserUseCase useCase;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        userUseCase = new UserUseCase(userPersistencePort, roleUseCase);
+        useCase = new UserUseCase(userPersistencePort, roleUseCase);
     }
 
     @Test
-    void shouldSaveUserWhenRoleExists() {
-        Long roleId = 1L;
-
-        RoleModel roleModel = new RoleModel(roleId, "ADMIN");
-        UserModel userModel = new UserModel(1L,
+    void save_WhenRoleExists_DelegatesToPersistenceAndSetsRole() {
+        Long givenRoleId = 5L;
+        UserModel user = new UserModel(
+                1L,
                 "Juan",
                 "Pérez",
-                "123456789",
+                "12345678",
                 "+573001234567",
-                LocalDate.of(1995, 5, 10),
+                LocalDate.of(1985, 6, 15),
                 "juan.perez@example.com",
-                "clave123",
-                roleId);
-        userModel.setIdRole(roleId);
+                "Secreto123!",
+                3L
+        );
+        user.setIdRole(null);
 
-        when(roleUseCase.getById(roleId)).thenReturn(Optional.of(roleModel));
+        RoleModel role = new RoleModel(1L,"Santiago");
+        role.setId(givenRoleId);
+        when(roleUseCase.getById(givenRoleId)).thenReturn(Optional.of(role));
 
-        userUseCase.save(userModel);
+        useCase.save(user, givenRoleId);
 
-        assertEquals(roleId, userModel.getIdRole());
-        verify(userPersistencePort, times(1)).save(userModel);
+        assertEquals(givenRoleId, user.getIdRole());
+        verify(userPersistencePort, times(1)).save(user);
     }
 
     @Test
-    void shouldThrowExceptionWhenRoleDoesNotExist() {
-        Long roleId = 2L;
-        UserModel userModel = new UserModel(1L,
+    void save_WhenRoleNotFound_ThrowsEmptyException() {
+        Long missingRoleId = 99L;
+        UserModel user = new UserModel(
+                1L,
                 "Juan",
                 "Pérez",
-                "123456789",
+                "12345678",
                 "+573001234567",
-                LocalDate.of(1995, 5, 10),
+                LocalDate.of(1985, 6, 15),
                 "juan.perez@example.com",
-                "clave123",
-                roleId);
-        userModel.setIdRole(roleId);
+                "Secreto123!",
+                3L
+        );
 
-        when(roleUseCase.getById(roleId)).thenReturn(Optional.empty());
+        when(roleUseCase.getById(missingRoleId)).thenReturn(Optional.empty());
 
-        EmptyException exception = assertThrows(EmptyException.class, () -> userUseCase.save(userModel));
-        assertEquals(DomainConstants.ROLE_NOT_FOUND, exception.getMessage());
-        verify(userPersistencePort, never()).save(any());
+        EmptyException ex = assertThrows(
+                EmptyException.class,
+                () -> useCase.save(user, missingRoleId)
+        );
+        assertEquals(DomainConstants.ROLE_NOT_FOUND, ex.getMessage());
+        verifyNoInteractions(userPersistencePort);
     }
 }
