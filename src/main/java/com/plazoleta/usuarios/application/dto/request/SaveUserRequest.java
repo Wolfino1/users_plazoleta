@@ -9,6 +9,7 @@ public record SaveUserRequest (long id,
                                String phoneNumber,
                                LocalDate dateOfBirth,
                                String email,
-                               String password
+                               String password,
+                               Long idRestaurant
          ){
 }

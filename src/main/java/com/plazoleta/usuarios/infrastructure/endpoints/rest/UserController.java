@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,12 +61,13 @@ public class UserController {
 
     @PostMapping("/employee")
     @PreAuthorize("hasRole('OWNER')")
-    public ResponseEntity<SaveUserResponse> saveEmployee(@RequestBody SaveUserRequest request) {
+    public ResponseEntity<SaveUserResponse> saveEmployee(
+            @RequestBody @Valid SaveUserRequest request) {
+        SaveUserResponse response = userService.saveEmployee(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.saveEmployee(request));
+                .body(response);
     }
-
     @PostMapping("/client")
     public ResponseEntity<SaveUserResponse> saveClient(@RequestBody SaveUserRequest request) {
         return ResponseEntity

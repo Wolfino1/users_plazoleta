@@ -15,6 +15,10 @@ public class CustomUserDetails implements UserDetails {
         this.user = user;
     }
 
+    public Long getRestaurantId() {
+        return user.getIdRestaurant();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         String roleName;
@@ -62,4 +66,5 @@ public class CustomUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }

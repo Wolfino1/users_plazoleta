@@ -8,6 +8,7 @@ import com.plazoleta.usuarios.domain.usecases.RoleUseCase;
 import com.plazoleta.usuarios.domain.usecases.UserUseCase;
 import com.plazoleta.usuarios.infrastructure.adapters.persistence.mysql.RolePersistenceAdapter;
 import com.plazoleta.usuarios.infrastructure.adapters.persistence.mysql.UserPersistenceAdapter;
+import com.plazoleta.usuarios.infrastructure.client.RestaurantApiClient;
 import com.plazoleta.usuarios.infrastructure.mappers.RoleEntityMapper;
 import com.plazoleta.usuarios.infrastructure.mappers.UserEntityMapper;
 import com.plazoleta.usuarios.infrastructure.repositories.mysql.RoleRepository;
@@ -35,6 +36,7 @@ public class BeanConfiguration {
     private final UserEntityMapper userEntityMapper;
     private final RoleRepository roleRepository;
     private final RoleEntityMapper roleEntityMapper;
+    private final RestaurantApiClient restaurantApiClient;
 
     @Bean
     public UserPersistencePort userPersistencePort() {
@@ -53,7 +55,7 @@ public class BeanConfiguration {
 
     @Bean
     public UserUseCase userUseCase() {
-        return new UserUseCase(userPersistencePort(), roleUseCase());
+        return new UserUseCase(userPersistencePort(), roleUseCase(), restaurantApiClient);
     }
 
     @Bean
@@ -82,7 +84,8 @@ public class BeanConfiguration {
         http
                 .securityMatcher(
                         "/api/v1/auth/login",
-                        //"/api/v1/user/admin",
+                        "/api/v1/restaurants/get",
+                        //"/api/v1/user/owner",
                         "/api/v1/user/client"
                 )
                 .csrf(csrf -> csrf.disable())

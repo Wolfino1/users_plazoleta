@@ -21,10 +21,12 @@ public class DomainConstants {
     public static final String UNDER_AGE_MESSAGE = "User must be 18 years old or more";
     public static final String ROLE_NOT_FOUND = "Role not found";
     public static final String USER_NOT_FOUND = "User not found";
-    public static final String ERROR_EXTRACTING_NAME_FROM_JWT = "Error extrayendo el username del JWT: ";
     public static final String INVALID_CREDENTIALS = "Invalid Credentials";
     public static final Long ADMIN_ID = 1L;
     public static final Long OWNER_ID = 2L;
     public static final Long EMPLOYEE_ID = 3L;
     public static final Long CLIENT_ID = 4L;
+    public static final String DONT_OWN_THE_RESTAURANT= "This restaurant doesn't belong to you";
+    public static final String RESTAURANTID_MANDATORY_FOR_EMPLOYEES = "Restaurant ID is mandatory " +
+            "for creating employees";
 }

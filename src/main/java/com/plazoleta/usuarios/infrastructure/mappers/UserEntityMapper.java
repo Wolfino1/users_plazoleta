@@ -10,9 +10,11 @@ import org.mapstruct.Mapping;
 public interface UserEntityMapper {
 
     @Mapping(target = "role.id", source = "idRole")
+    @Mapping(target = "restaurantId",   source = "idRestaurant")
     UserEntity modelToEntity(UserModel model);
 
     @Mapping(target = "idRole", source = "role.id")
+    @Mapping(target = "idRestaurant",   source = "restaurantId")
     UserModel entityToModel(UserEntity entity);
 
     default RoleEntity mapRole(Long idRole) {

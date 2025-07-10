@@ -1,10 +1,13 @@
 package com.plazoleta.usuarios.infrastructure.security;
 
 import com.plazoleta.usuarios.common.configurations.util.Constants;
+import com.plazoleta.usuarios.domain.exceptions.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -31,7 +34,13 @@ public class JwtUtil {
         switch (fullRole) {
             case "ADMIN"    -> claims.put("adminId", id);
             case "OWNER"    -> claims.put("ownerId", id);
-            case "EMPLOYEE" -> claims.put("employeeId", id);
+            case "EMPLOYEE" -> {
+                claims.put("employeeId", id);
+                Long restId = userDetails.getRestaurantId();
+                if (restId != null) {
+                    claims.put("restaurantId", restId);
+                }
+            }
             case "CLIENT"   -> claims.put("clientId", id);
         }
 
@@ -41,7 +50,7 @@ public class JwtUtil {
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + EXPIRATION_TIME))
                 .signWith(
-                        Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)),
+                        Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8)),// La clave hacerla variable de entorno
                         SignatureAlgorithm.HS256
                 )
                 .compact();
@@ -68,5 +77,26 @@ public class JwtUtil {
             return false;
         }
     }
+
+    public Long getUserIdFromSecurityContext() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new UnauthorizedException(Constants.USER_NOT_AUTHENTICATED);
+        }
+
+        Object principal = auth.getPrincipal();
+        if (principal instanceof CustomUserDetails cud) {
+            return cud.getId();
+        }
+        if (principal instanceof Claims claims) {
+            Number ownerId = claims.get("ownerId", Number.class);
+            if (ownerId != null) {
+                return ownerId.longValue();
+            }
+        }
+
+        throw new UnauthorizedException(Constants.USER_NOT_AUTHENTICATED);
+    }
+
 }
 
