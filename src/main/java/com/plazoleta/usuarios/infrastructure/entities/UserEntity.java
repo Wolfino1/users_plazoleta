@@ -26,4 +26,8 @@ public class UserEntity {
     @ManyToOne(targetEntity = RoleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private RoleEntity role;
+
+    @Column(name = "restaurant_id")
+    private Long restaurantId;
+
 }

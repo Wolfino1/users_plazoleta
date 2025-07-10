@@ -6,9 +6,11 @@ import com.plazoleta.usuarios.application.dto.response.SaveUserResponse;
 import com.plazoleta.usuarios.application.mappers.UserDtoMapper;
 import com.plazoleta.usuarios.application.service.UserService;
 import com.plazoleta.usuarios.domain.models.UserModel;
-import com.plazoleta.usuarios.domain.usecases.UserUseCase;
+import com.plazoleta.usuarios.domain.ports.in.UserServicePort;
 import com.plazoleta.usuarios.domain.util.constants.DomainConstants;
+import com.plazoleta.usuarios.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,12 +20,17 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private final UserDtoMapper mapper;
-    private final UserUseCase useCase;
+    private final UserServicePort userServicePort;
+    private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public SaveUserResponse saveOwner(SaveUserRequest req) {
         UserModel model = mapper.requestToModel(req);
-        useCase.save(model, DomainConstants.OWNER_ID);
+        String raw       = req.password();
+        String encoded   = passwordEncoder.encode(raw);
+        model.setPassword(encoded, raw);
+        userServicePort.save(model, DomainConstants.OWNER_ID);
         return new SaveUserResponse(
                 Constants.SAVE_USER_RESPONSE_MESSAGE,
                 LocalDateTime.now()
@@ -33,7 +40,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public SaveUserResponse saveEmployee(SaveUserRequest req) {
         UserModel model = mapper.requestToModel(req);
-        useCase.save(model, DomainConstants.EMPLOYEE_ID);
+        String raw       = req.password();
+        String encoded   = passwordEncoder.encode(raw);
+        model.setPassword(encoded, raw);
+        Long ownerId = jwtUtil.getUserIdFromSecurityContext();
+        userServicePort.saveEmployee(model, ownerId);
         return new SaveUserResponse(
                 Constants.SAVE_USER_RESPONSE_MESSAGE,
                 LocalDateTime.now()
@@ -43,7 +54,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public SaveUserResponse saveClient(SaveUserRequest req) {
         UserModel model = mapper.requestToModel(req);
-        useCase.save(model, DomainConstants.CLIENT_ID);
+        String raw       = req.password();
+        String encoded   = passwordEncoder.encode(raw);
+        model.setPassword(encoded, raw);
+        userServicePort.save(model, DomainConstants.CLIENT_ID);
         return new SaveUserResponse(
                 Constants.SAVE_USER_RESPONSE_MESSAGE,
                 LocalDateTime.now()

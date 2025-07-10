@@ -41,4 +41,16 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ExceptionResponse(exception.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage(),
+                LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedException(UnauthorizedException exception) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(exception.getMessage(),
+                LocalDateTime.now()));
+    }
 }

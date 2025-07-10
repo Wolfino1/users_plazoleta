@@ -20,9 +20,10 @@ import java.util.regex.Pattern;
         private String email;
         private String password;
         private Long idRole;
+        private Long idRestaurant;
 
         public UserModel(long id, String name, String lastname, String document, String phoneNumber,
-                         LocalDate dateOfBirth, String email, String password, Long idRole) {
+                         LocalDate dateOfBirth, String email, String password, Long idRole, Long idRestaurant) {
             this.id = id;
             setName(name);
             setLastname(lastname);
@@ -32,6 +33,7 @@ import java.util.regex.Pattern;
             setEmail(email);
             setPassword(password,password);
             this.idRole = idRole;
+            this.idRestaurant = idRestaurant;
         }
 
         public long getId() {
@@ -132,7 +134,6 @@ import java.util.regex.Pattern;
 
             if (password == null) throw new NullException(DomainConstants.FIELD_PASSWORD_NULL_MESSAGE);
             if (password.trim().isEmpty()) throw new EmptyException(DomainConstants.FIELD_PASSWORD_EMPTY_MESSAGE);
-
             this.password = passwordEncode;
         }
 
@@ -147,5 +148,13 @@ import java.util.regex.Pattern;
         private boolean esMayorDeEdad(LocalDate fechaNacimiento) {
             LocalDate hoy = LocalDate.now();
             return Period.between(fechaNacimiento, hoy).getYears() >= 18;
+        }
+
+        public Long getIdRestaurant() {
+            return idRestaurant;
+        }
+
+        public void setIdRestaurant(Long idRestaurant) {
+            this.idRestaurant = idRestaurant;
         }
     }
