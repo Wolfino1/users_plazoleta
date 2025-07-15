@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -62,5 +63,10 @@ public class UserServiceImpl implements UserService {
                 Constants.SAVE_USER_RESPONSE_MESSAGE,
                 LocalDateTime.now()
         );
+    }
+
+    @Override
+    public UserModel getUserById(Long id) {
+        return userServicePort.getUserById(id);
     }
 }

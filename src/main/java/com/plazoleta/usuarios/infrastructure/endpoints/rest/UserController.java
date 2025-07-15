@@ -2,7 +2,9 @@ package com.plazoleta.usuarios.infrastructure.endpoints.rest;
 
 import com.plazoleta.usuarios.application.dto.request.SaveUserRequest;
 import com.plazoleta.usuarios.application.dto.response.SaveUserResponse;
+import com.plazoleta.usuarios.application.dto.response.UserResponse;
 import com.plazoleta.usuarios.application.service.UserService;
+import com.plazoleta.usuarios.domain.models.UserModel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -73,5 +72,11 @@ public class UserController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(userService.saveClient(request));
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+        UserModel user = userService.getUserById(id);
+        UserResponse resp = new UserResponse(user.getId(), user.getEmail());
+        return ResponseEntity.ok(resp);
     }
 }

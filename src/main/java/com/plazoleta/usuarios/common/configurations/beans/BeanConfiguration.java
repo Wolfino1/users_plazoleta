@@ -86,7 +86,8 @@ public class BeanConfiguration {
                         "/api/v1/auth/login",
                         "/api/v1/restaurants/get",
                         //"/api/v1/user/owner",
-                        "/api/v1/user/client"
+                        "/api/v1/user/client",
+                        "/api/v1/user/{id}"
                 )
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(a -> a.anyRequest().permitAll());

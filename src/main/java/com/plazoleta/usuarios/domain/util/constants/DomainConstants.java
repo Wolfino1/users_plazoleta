@@ -21,6 +21,7 @@ public class DomainConstants {
     public static final String UNDER_AGE_MESSAGE = "User must be 18 years old or more";
     public static final String ROLE_NOT_FOUND = "Role not found";
     public static final String USER_NOT_FOUND = "User not found";
+    public static final String USER_CANT_NULL = "User can't be null";
     public static final String INVALID_CREDENTIALS = "Invalid Credentials";
     public static final Long ADMIN_ID = 1L;
     public static final Long OWNER_ID = 2L;

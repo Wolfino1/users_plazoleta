@@ -51,5 +51,19 @@ public class UserUseCase implements UserServicePort {
         userModel.setIdRole(DomainConstants.EMPLOYEE_ID);
         userPersistencePort.save(userModel);
     }
+
+    @Override
+    public UserModel getUserById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException(DomainConstants.USER_CANT_NULL);
+        }
+        UserModel user = userPersistencePort.getUserById(id);
+        if (user == null) {
+            throw new RuntimeException(DomainConstants.USER_NOT_FOUND + id);
+        }
+        return user;
+    }
+
 }
+
 

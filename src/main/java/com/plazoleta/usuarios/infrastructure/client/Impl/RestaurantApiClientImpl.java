@@ -35,5 +35,4 @@ public class RestaurantApiClientImpl implements RestaurantApiClient {
         }
         return page.content().get(0);
     }
-
 }
