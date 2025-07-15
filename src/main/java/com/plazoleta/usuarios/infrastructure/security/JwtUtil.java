@@ -33,7 +33,14 @@ public class JwtUtil {
         Long id = userDetails.getId();
         switch (fullRole) {
             case "ADMIN"    -> claims.put("adminId", id);
-            case "OWNER"    -> claims.put("ownerId", id);
+            case "OWNER"    -> {
+                claims.put("ownerId", id);
+                Long restId = userDetails.getRestaurantId();
+                if (restId != null) {
+                    claims.put("restaurantId", restId);
+                }
+            }
+
             case "EMPLOYEE" -> {
                 claims.put("employeeId", id);
                 Long restId = userDetails.getRestaurantId();
